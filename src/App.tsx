@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 import Notification from "./components/UI/Notification";
 import { useAppDispatch } from "./hooks/hooks";
 import { StoreType } from "./store";
-import { sendCartData } from "./store/cart-slice";
+import { fetchCartData, sendCartData } from "./store/cart-actions";
 
 let isInitial = true;
 
@@ -21,11 +21,17 @@ function App() {
   );
 
   useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (isInitial) {
       isInitial = false;
       return;
     }
-    dispatch(sendCartData(cart));
+    if (cart.changed) {
+      dispatch(sendCartData(cart));
+    }
   }, [cart, dispatch]);
 
   // useEffect(() => {
